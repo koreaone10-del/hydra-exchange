@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - Hydra Exchange</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 15px 30px; border-radius: 8px; }
+        .card { background: #1e293b; margin-top: 20px; padding: 30px; border-radius: 8px; text-align: center; }
+        .btn-logout { background: #ef4444; color: white; padding: 8px 15px; border: none; border-radius: 4px; text-decoration: none; cursor: pointer; }
+        .credits { font-size: 24px; color: #22c55e; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 id="channelName">جاري تحميل البيانات...</h2>
+        <a href="/logout" class="btn-logout">تسجيل الخروج</a>
+    </div>
+    
+    <div class="card">
+        <h3>رصيدك الحالي من النقاط:</h3>
+        <p class="credits" id="userCredits">0</p>
+    </div>
+
+    <script>
+        fetch('/api/current_user')
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    window.location.href = '/';
+                } else {
+                    document.getElementById('channelName').innerText = `مرحباً، ${data.channelName}`;
+                    document.getElementById('userCredits').innerText = data.credits;
+                }
+            });
+    </script>
+</body>
+</html>
