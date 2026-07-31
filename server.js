@@ -1,96 +1,92 @@
-require('dotenv').config();
 const express = require('express');
-const { google } = require('googleapis');
-const cors = require('cors');
-const { connectDB, User } = require('./database'); // استدعاء قاعدة البيانات التي أنشأناها في الملف الآخر
+const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const path = require('path');
+const { connectDB, User } = require('./database');
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 10000;
 
-// 1. تشغيل الاتصال بقاعدة البيانات
+// الاتصال بقاعدة البيانات
 connectDB();
 
-// 2. إعداد جسر التواصل مع جوجل باستخدام المتغيرات البيئية السرية
-const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.REDIRECT_URI
-);
+// إعداد الجلسات (Sessions)
+app.use(session({
+    secret: 'hydra-exchange-super-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
 
-// الصلاحيات المطلوبة (قراءة الفيديوهات والتفاعل)
-const SCOPES = [
-    'https://www.googleapis.com/auth/youtube.readonly',
-    'https://www.googleapis.com/auth/youtube.force-ssl'
-];
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// 3. مسار تسجيل الدخول (البوابة التي يضغط عليها الزبون)
-app.get('/auth/google', (req, res) => {
-    const url = oauth2Client.generateAuthUrl({
-        access_type: 'offline', // ضروري جداً للحصول على الرموز الدائمة
-        prompt: 'consent',
-        scope: SCOPES,
-    });
-    res.redirect(url);
-});
-
-// 4. مسار العودة (بعد موافقة الزبون في صفحة جوجل)
-app.get('/auth/google/callback', async (req, res) => {
-    const code = req.query.code;
+// إعداد استراتيجية Google OAuth
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.REDIRECT_URI || 'https://hydra-exchange.onrender.com/auth/google/callback'
+}, async (accessToken, refreshToken, profile, done) => {
     try {
-        const { tokens } = await oauth2Client.getToken(code);
-        oauth2Client.setCredentials(tokens);
-
-        const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
-        
-        // جلب بيانات قناة الزبون
-        const channelResponse = await youtube.channels.list({
-            part: 'snippet,statistics',
-            mine: true
-        });
-
-        const myChannel = channelResponse.data.items[0];
-        
-        // 🧠 الذكاء الاصطناعي لحفظ بيانات الزبون
-        let user = await User.findOne({ googleId: myChannel.id });
-        
-        if (user) {
-            // تحديث المفاتيح السرية إذا عاد الزبون للتسجيل
-            user.tokens = tokens;
-            await user.save();
-        } else {
-            // زبون جديد! تسجيله في قاعدة البيانات وإعطاؤه 50 نقطة مجانية
+        let user = await User.findOne({ googleId: profile.id });
+        if (!user) {
             user = new User({
-                googleId: myChannel.id,
-                channelName: myChannel.snippet.title,
-                channelId: myChannel.id,
-                tokens: tokens,
-                role: 'user' 
+                googleId: profile.id,
+                channelName: profile.displayName,
+                channelId: profile.id,
+                tokens: { accessToken, refreshToken },
+                credits: 50 // هدية ترحيبية 50 نقطة
             });
             await user.save();
+        } else {
+            user.tokens = { accessToken, refreshToken };
+            await user.save();
         }
+        return done(null, user);
+    } catch (err) {
+        return done(err, null);
+    }
+}));
 
-        // واجهة نجاح التسجيل التي ستظهر للزبون
-        res.send(`
-            <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #0d1117; color: #c9d1d9; padding: 50px; border-radius: 10px;">
-                <h1 style="color: #4ade80;">✅ تمت المصادقة بنجاح!</h1>
-                <h2>مرحباً يا: ${user.channelName}</h2>
-                <p>رصيدك الحالي: <b style="color: #58a6ff; font-size: 20px;">${user.credits} نقاط</b></p>
-                <p style="color: #8b949e; margin-top: 20px;">(تم حفظ بياناتك بأمان في قاعدة البيانات، يمكنك الآن إغلاق هذه النافذة)</p>
-            </div>
-        `);
-
-    } catch (error) {
-        console.error('🔴 خطأ في المصادقة:', error);
-        res.status(500).send('فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (err) {
+        done(err, null);
     }
 });
 
-// مسار رئيسي لفحص حالة الخادم
-app.get('/', (req, res) => {
-    res.send('🚀 خادم Hydra Exchange يعمل بنجاح وجاهز لاستقبال الطلبات!');
+// مسارات المصادقة
+app.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile', 'email', 'https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
+}));
+
+app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/' }),
+    (req, res) => {
+        res.redirect('/dashboard.html');
+    }
+);
+
+app.get('/api/current_user', (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ error: 'غير مسجل الدخول' });
+    }
+    res.json(req.user);
 });
 
-// تشغيل الخادم
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`الخادم يعمل بامتياز على المنفذ ${PORT}`));
+app.get('/logout', (req, res) => {
+    req.logout(() => {
+        res.redirect('/');
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`الخادم يعمل بامتياز على المنفذ ${PORT}`);
+});
