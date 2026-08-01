@@ -29,17 +29,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.REDIRECT_URI || 'https://hydra-exchange.onrender.com/auth/google/callback'
+    callbackURL: 'https://hydra-exchange.onrender.com/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
             user = new User({
                 googleId: profile.id,
-                channelName: profile.displayName,
+                channelName: profile.displayName || 'يوتيوب كريتر',
                 channelId: profile.id,
                 tokens: { accessToken, refreshToken },
-                credits: 50 // هدية ترحيبية 50 نقطة
+                credits: 50
             });
             await user.save();
         } else {
@@ -62,7 +62,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-// مسارات المصادقة
+// مسارات المصادقة وتسجيل الدخول
 app.get('/auth/google', passport.authenticate('google', {
     scope: ['profile', 'email', 'https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
 }));
