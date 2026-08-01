@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 10000;
 // الاتصال بقاعدة البيانات
 connectDB();
 
-// إعداد الجلسات (Sessions)
+// إعداد الجلسات
 app.use(session({
     secret: 'hydra-exchange-super-secret-key',
     resave: false,
@@ -25,29 +25,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// إعداد استراتيجية Google OAuth
+// إعداد استراتيجية Google OAuth مع حماية كاملة من الأخطاء
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: 'https://hydra-exchange.onrender.com/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
+        let channelName = profile.displayName || (profile.emails && profile.emails[0] ? profile.emails[0].value : 'مستخدم يوتيوب');
+        
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
             user = new User({
                 googleId: profile.id,
-                channelName: profile.displayName || 'يوتيوب كريتر',
+                channelName: channelName,
                 channelId: profile.id,
-                tokens: { accessToken, refreshToken },
+                tokens: { accessToken: accessToken || '', refreshToken: refreshToken || '' },
                 credits: 50
             });
             await user.save();
         } else {
-            user.tokens = { accessToken, refreshToken };
+            user.tokens = { accessToken: accessToken || '', refreshToken: refreshToken || user.tokens?.refreshToken || '' };
+            user.channelName = channelName;
             await user.save();
         }
         return done(null, user);
     } catch (err) {
+        console.error("OAuth Error:", err);
         return done(err, null);
     }
 }));
@@ -62,7 +66,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-// مسارات المصادقة وتسجيل الدخول
+// المسارات
 app.get('/auth/google', passport.authenticate('google', {
     scope: ['profile', 'email', 'https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
 }));
