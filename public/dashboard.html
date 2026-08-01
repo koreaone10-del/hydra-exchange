@@ -6,147 +6,93 @@
     <title>لوحة التحكم | HydraTube AI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
-        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         
         body { 
-            background-color: #050505; 
-            color: #f8fafc; 
-            position: relative;
-            min-height: 100vh;
-            padding: 20px;
+            background-color: #050505; color: #f8fafc; position: relative; min-height: 100vh; padding: 20px;
         }
-
-        /* دمج صورة الخلفية بشفافية 15% لكي لا تزعج العين */
+        /* 🖼️ استدعاء الخلفية من ملفاتك المحلية مباشرة */
         body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://raw.githubusercontent.com/koreaone10-del/hydra-exchange/main/file_0000000023b48243baf47d98f8e94412.png');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15; 
-            z-index: -1;
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('/bg.png'); background-size: cover; background-position: center;
+            opacity: 0.15; z-index: -1;
         }
 
         .container { max-width: 1000px; margin: 0 auto; }
-        
-        /* اللوغو في لوحة التحكم */
         .dashboard-logo { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-        .dashboard-logo img { width: 50px; height: auto; border-radius: 12px; }
-        .dashboard-logo span { font-size: 15px; font-weight: 900; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .dashboard-logo img { width: 55px; height: auto; border-radius: 12px; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+        .dashboard-logo span { font-size: 16px; font-weight: 900; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .glass-card { 
-            background: rgba(20, 25, 40, 0.7); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 16px; 
-            padding: 25px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            transition: transform 0.3s ease;
-        }
-
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
-        
-        .user-info h2 { font-weight: bold; font-size: 1.2rem; margin-top: 10px; }
-        .user-info p { color: #94a3b8; font-size: 13px; }
-        
-        .btn-logout { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn-logout:hover { background: #ef4444; color: white; }
-
+        .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
+        .user-info h2 { font-weight: bold; font-size: 1.2rem; margin-top: 10px; color: #fff; }
+        .btn-logout { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .stat-box { text-align: center; }
         .stat-val { font-size: 2.2rem; font-weight: 900; color: #38bdf8; margin: 5px 0; }
         h3 { color: #f1f5f9; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px; }
-        
         .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
         .video-item { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; display: flex; gap: 12px; align-items: center; }
         .video-item img { width: 100px; height: 60px; object-fit: cover; border-radius: 8px; }
-        .video-info h4 { font-size: 13px; margin-bottom: 8px; color: #e2e8f0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .btn-boost { background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-        
-        .earn-section { text-align: center; background: linear-gradient(135deg, rgba(20,184,166,0.1), rgba(14,165,233,0.1)); border: 1px solid rgba(20, 184, 166, 0.4); }
-        .btn-earn { background: linear-gradient(90deg, #14b8a6, #0ea5e9); color: white; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; text-decoration: none; display: inline-block; }
-
-        input[type="text"] { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px; outline: none; direction: ltr; font-size: 13px; text-align: center; }
-        .crypto-address { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 8px; text-align: center; color: #f59e0b; font-family: monospace; font-size: 12px; margin-bottom: 12px; border: 1px dashed #f59e0b; user-select: all; word-break: break-all; }
-        .btn-crypto { background: linear-gradient(90deg, #f59e0b, #d97706); border: none; color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .video-info h4 { font-size: 13px; margin-bottom: 8px; color: #e2e8f0; }
+        .btn-boost { background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .earn-section { text-align: center; border: 1px solid rgba(56, 189, 248, 0.4); }
+        .btn-earn { background: linear-gradient(90deg, #38bdf8, #818cf8); color: white; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 15px; text-decoration: none; display: inline-block; margin-top: 10px;}
+        input[type="text"] { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="dashboard-logo">
-                <img src="https://raw.githubusercontent.com/koreaone10-del/hydra-exchange/main/file_00000000c3b88243a2a132ef00a63131.png" alt="Logo">
+                <!-- 🖼️ استدعاء اللوغو من ملفاتك المحلية -->
+                <img src="/logo.png" alt="Logo">
                 <span>HydraTube AI</span>
             </div>
             <div class="user-info">
-                <h2 id="channelTitle">جاري مزامنة القناة...</h2>
-                <p>لوحة التحكم الآمنة</p>
+                <h2 id="channelTitle">⏳ جاري الاتصال بيوتيوب...</h2>
             </div>
             <a href="/logout" class="btn-logout">خروج</a>
         </div>
 
         <div class="stats-grid">
-            <div class="glass-card stat-box">
-                <h3>إجمالي المشتركين</h3>
-                <div class="stat-val" id="subCount">--</div>
-            </div>
-            <div class="glass-card stat-box">
-                <h3>إجمالي المشاهدات</h3>
-                <div class="stat-val" id="viewCount">--</div>
-            </div>
-            <div class="glass-card stat-box">
-                <h3>الرصيد القابل للاستخدام</h3>
-                <div class="stat-val" id="userCredits" style="color: #4ade80;">--</div>
-            </div>
+            <div class="glass-card stat-box"><h3>المشتركين</h3><div class="stat-val" id="subCount">--</div></div>
+            <div class="glass-card stat-box"><h3>المشاهدات</h3><div class="stat-val" id="viewCount">--</div></div>
+            <div class="glass-card stat-box"><h3>رصيد النقاط</h3><div class="stat-val" id="userCredits" style="color: #4ade80;">--</div></div>
         </div>
 
         <div class="glass-card earn-section">
             <h3>⚡ تجميع النقاط الأوتوماتيكي</h3>
-            <p style="color: #cbd5e1; font-size: 13px; margin-bottom: 15px;">احصل على 0.5 نقطة عن كل مشاهدة تلقائية تتم بواسطة الذكاء الاصطناعي</p>
             <a href="/automation.html" class="btn-earn">🤖 بدء الأوتوميشن الآن</a>
         </div>
 
         <div class="glass-card">
-            <h3>🎥 اختر فيديو لإضافة مشاهدات/إعجابات له</h3>
+            <h3>🎥 فيديوهاتك لترويجها</h3>
             <div class="videos-grid" id="videosContainer">
-                <p style="color: #94a3b8; text-align: center; width: 100%;">جاري جلب الفيديوهات...</p>
+                <p style="color: #fbbf24; text-align: center; width: 100%; font-weight: bold;">⏳ جاري جلب الفيديوهات... (يرجى الانتظار)</p>
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="glass-card">
-                <h3>👥 اربح 10 نقاط لكل صديق</h3>
-                <input type="text" id="refLink" readonly value="جاري الإنشاء...">
-                <button class="btn-boost" style="width: 100%; padding: 10px;" onclick="copyRef()">نسخ رابط الإحالة</button>
-            </div>
-            <div class="glass-card">
-                <h3>💳 شحن الرصيد (USDT - BEP20)</h3>
-                <div class="crypto-address">0x422e4ed7959958b4f0fec76fd3149af49a43c768</div>
-                <input type="text" id="txHash" placeholder="رمز المعاملة (TX Hash)">
-                <button class="btn-crypto" onclick="verifyCrypto()">تأكيد الدفع</button>
-            </div>
+        <div class="glass-card">
+            <h3>👥 رابط الإحالة الخاص بك</h3>
+            <input type="text" id="refLink" readonly value="جاري الإنشاء...">
+            <button class="btn-boost" style="width: 100%; padding: 10px;" onclick="copyRef()">نسخ الرابط</button>
         </div>
     </div>
 
     <script>
-        let myDomain = window.location.origin;
-        
+        // 🛡️ نظام قوي لجلب البيانات ومعالجة الأخطاء
         fetch('/api/youtube-data')
-            .then(res => {
+            .then(async res => {
                 if (res.status === 401) { window.location.href = '/'; throw new Error('Unauthorized'); }
-                return res.json();
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.details || data.error || 'خطأ غير معروف في السيرفر');
+                return data;
             })
             .then(data => {
-                if (data.error) { alert('خطأ: ' + data.error); return; }
-                
-                document.getElementById('channelTitle').innerText = data.user.channelName;
+                document.getElementById('channelTitle').innerText = `قناة: ${data.user.channelName}`;
                 document.getElementById('userCredits').innerText = data.user.credits;
-                document.getElementById('refLink').value = `${myDomain}/auth/google?ref=${data.user.referralCode}`;
+                document.getElementById('refLink').value = `${window.location.origin}/auth/google?ref=${data.user.referralCode}`;
                 
                 if (data.channel && data.channel.statistics) {
                     document.getElementById('subCount').innerText = Number(data.channel.statistics.subscriberCount).toLocaleString();
@@ -162,36 +108,32 @@
                                 <img src="${v.snippet.thumbnails.default.url}" alt="video">
                                 <div class="video-info">
                                     <h4>${v.snippet.title}</h4>
-                                    <button class="btn-boost" onclick="alert('تم اختيار الفيديو لبدء حملة ترويجية!')">ترويج</button>
+                                    <button class="btn-boost" onclick="alert('جاهز للترويج!')">ترويج</button>
                                 </div>
                             </div>
                         `;
                     });
                 } else {
-                    container.innerHTML = `<p style="color: #94a3b8; text-align: center; width: 100%;">لا توجد فيديوهات عامة.</p>`;
+                    container.innerHTML = `<p style="color: #94a3b8; text-align: center; width:100%;">لا توجد فيديوهات عامة.</p>`;
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                // 🚨 هنا يظهر سبب الكارثة الحقيقي بدلاً من التوقف اللانهائي!
+                console.error(err);
+                document.getElementById('channelTitle').innerText = '❌ فشل الاتصال بقناتك';
+                document.getElementById('refLink').value = 'خطأ في النظام';
+                document.getElementById('videosContainer').innerHTML = `
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 15px; border-radius: 8px; width: 100%; text-align: center;">
+                        <h4 style="color: #ef4444; margin-bottom: 10px;">رسالة خطأ من جوجل:</h4>
+                        <p style="color: #fca5a5; font-size: 14px;">${err.message}</p>
+                        <p style="color: #fff; margin-top: 10px; font-size: 13px;">يرجى التأكد من تفعيل "YouTube Data API v3" في لوحة تحكم Google Cloud.</p>
+                    </div>`;
+            });
 
         function copyRef() {
             let refInput = document.getElementById('refLink');
-            if(refInput.value === "جاري الإنشاء...") return;
-            refInput.select();
-            document.execCommand("copy");
-            alert("✅ تم نسخ رابط الإحالة!");
-        }
-
-        async function verifyCrypto() {
-            const hash = document.getElementById('txHash').value;
-            if(!hash || hash.length < 20) return alert("❌ رمز غير صالح.");
-            const btn = document.querySelector('.btn-crypto');
-            btn.innerText = "⏳ التحقق...";
-            try {
-                const response = await fetch('/api/verify-crypto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ txHash: hash }) });
-                const result = await response.json();
-                if(result.success) { alert(result.message); window.location.reload(); } 
-                else { alert(result.error); btn.innerText = "تأكيد الدفع"; }
-            } catch(e) { alert("خطأ اتصال."); btn.innerText = "تأكيد الدفع"; }
+            if(refInput.value === "جاري الإنشاء..." || refInput.value === "خطأ في النظام") return;
+            refInput.select(); document.execCommand("copy"); alert("✅ تم النسخ!");
         }
     </script>
 </body>
