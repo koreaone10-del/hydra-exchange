@@ -3,37 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - Hydra Exchange</title>
+    <title>لوحة التحكم الفاخرة | Hydra AI</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 15px 30px; border-radius: 8px; }
-        .card { background: #1e293b; margin-top: 20px; padding: 30px; border-radius: 8px; text-align: center; }
-        .btn-logout { background: #ef4444; color: white; padding: 8px 15px; border: none; border-radius: 4px; text-decoration: none; cursor: pointer; }
-        .credits { font-size: 24px; color: #22c55e; font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #050505; color: #fff; background-image: radial-gradient(circle at 15% 50%, rgba(20, 184, 166, 0.15), transparent 25%), radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 25%); min-height: 100vh; padding: 30px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 15px; }
+        .header h2 { font-weight: 900; background: linear-gradient(90deg, #14b8a6, #0ea5e9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .btn-logout { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-logout:hover { background: #ef4444; color: white; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .credits-val { font-size: 3rem; font-weight: 900; color: #2dd4bf; margin: 10px 0; }
+        
+        h3 { color: #e2e8f0; font-size: 1.2rem; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        
+        input[type="text"] { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #2dd4bf; padding: 15px; border-radius: 10px; margin-bottom: 15px; outline: none; transition: 0.3s; font-size: 14px; text-align: left; direction: ltr; }
+        input[type="text"]:focus { border-color: #0ea5e9; box-shadow: 0 0 15px rgba(14, 165, 233, 0.3); }
+        
+        .btn-ai { background: linear-gradient(90deg, #14b8a6, #0ea5e9); border: none; color: white; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-ai:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(14, 165, 233, 0.4); }
+        
+        .ref-box { display: flex; gap: 10px; }
+        .ref-box input { margin: 0; }
+        
+        .crypto-address { background: #111; padding: 15px; border-radius: 10px; text-align: center; color: #f59e0b; font-family: monospace; font-size: 13px; margin-bottom: 15px; border: 1px dashed #f59e0b; user-select: all; word-break: break-all; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 id="channelName">جاري تحميل البيانات...</h2>
-        <a href="/logout" class="btn-logout">تسجيل الخروج</a>
-    </div>
-    
-    <div class="card">
-        <h3>رصيدك الحالي من النقاط:</h3>
-        <p class="credits" id="userCredits">0</p>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h2 id="channelName">جاري الاتصال بخوادم الذكاء الاصطناعي...</h2>
+                <p style="color: #94a3b8; font-size: 14px; margin-top: 5px;">مرحباً بك في لوحة تحكم Hydra الأوتوماتيكية</p>
+            </div>
+            <a href="/logout" class="btn-logout">تسجيل الخروج ⏏</a>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="glass-card">
+                <h3>رصيد الطاقة (النقاط)</h3>
+                <div class="credits-val" id="userCredits">0</div>
+                <p style="color: #64748b; font-size: 12px;">نقطة ترحيبية أساسية. اشحن حسابك لتشغيل الأوتوميشن.</p>
+            </div>
+
+            <div class="glass-card">
+                <h3>👥 نظام الأرباح (الإحالة)</h3>
+                <p style="color: #cbd5e1; font-size: 13px; margin-bottom: 15px;">ادعُ أصدقاءك واحصل على 10 نقاط لكل تسجيل ناجح.</p>
+                <div class="ref-box">
+                    <input type="text" id="refLink" readonly value="جاري إنشاء الرابط...">
+                    <button class="btn-ai" style="width: 100px;" onclick="copyRef()">نسخ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="glass-card">
+                <h3>🤖 إطلاق حملة أوتوماتيكية</h3>
+                <p style="color: #cbd5e1; font-size: 13px; margin-bottom: 15px;">أدخل الرابط، وسيقوم نظامنا بتوزيع المهام آلياً.</p>
+                <input type="text" placeholder="https://youtube.com/..." id="taskUrl">
+                <button class="btn-ai" onclick="alert('تم إرسال الطلب لخوارزميات الذكاء الاصطناعي! بانتظار توفر رصيد كافٍ.')">⚡ إطلاق الحملة الآن</button>
+            </div>
+
+            <div class="glass-card">
+                <h3>💳 شحن الرصيد (USDT - BNB Smart Chain BEP20)</h3>
+                <p style="color: #cbd5e1; font-size: 12px; margin-bottom: 8px;">أرسل الدفعة عبر شبكة BEP20 إلى محفظتك المربطة:</p>
+                <div class="crypto-address">0x422e4ed7959958b4f0fec76fd3149af49a43c768</div>
+                <input type="text" id="txHash" placeholder="أدخل رمز العملية (Transaction Hash)">
+                <button class="btn-ai" onclick="verifyCrypto()" style="background: linear-gradient(90deg, #f59e0b, #d97706);">🔍 تأكيد الدفعة بالذكاء الاصطناعي</button>
+            </div>
+        </div>
     </div>
 
     <script>
+        let myDomain = window.location.origin;
+
         fetch('/api/current_user')
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
                     window.location.href = '/';
                 } else {
-                    document.getElementById('channelName').innerText = `مرحباً، ${data.channelName}`;
+                    document.getElementById('channelName').innerText = `النظام جاهز، ${data.channelName}`;
                     document.getElementById('userCredits').innerText = data.credits;
+                    document.getElementById('refLink').value = `${myDomain}/auth/google?ref=${data.referralCode}`;
                 }
             });
+
+        function copyRef() {
+            let refInput = document.getElementById('refLink');
+            refInput.select();
+            document.execCommand("copy");
+            alert("تم نسخ رابط الإحالة الفاخر الخاص بك!");
+        }
+
+        async function verifyCrypto() {
+            const hash = document.getElementById('txHash').value;
+            if(!hash) return alert("يرجى إدخال رمز المعاملة (TX Hash) أولاً.");
+            
+            const btn = event.target;
+            btn.innerText = "⏳ جاري فحص البلوكشين...";
+            
+            try {
+                const response = await fetch('/api/verify-crypto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ txHash: hash })
+                });
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert(result.message);
+                    window.location.reload();
+                } else {
+                    alert(result.error);
+                }
+            } catch (err) {
+                alert("حدث خطأ في الاتصال بشبكة البلوكشين.");
+            }
+            btn.innerText = "🔍 تأكيد الدفعة بالذكاء الاصطناعي";
+        }
     </script>
 </body>
 </html>
