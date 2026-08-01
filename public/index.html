@@ -1,23 +1,103 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hydra Exchange - تبادل الاشتراكات والزيارات</title>
+    <!-- كلمات خوارزمية متقدمة لمحركات البحث SEO -->
+    <meta name="keywords" content="زيادة مشاهدات يوتيوب, تفعيل الربح من اليوتيوب, زيادة مشتركين, Hydra Exchange, Automation YouTube, ربح النقاط, تسويق فيديو">
+    <meta name="description" content="منصة Hydra الذكية الأوتوماتيكية لمضاعفة مشاهدات واشتراكات يوتيوب بالذكاء الاصطناعي والمجتمع التفاعلي.">
+    <title>Hydra Exchange | المنصة الخارقة لنمو يوتيوب بالذكاء الاصطناعي</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; margin: 0; padding: 50px; }
-        .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #38bdf8; margin-bottom: 20px; }
-        p { color: #94a3b8; line-height: 1.6; margin-bottom: 30px; }
-        .btn-google { background: #db4437; color: white; padding: 12px 25px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; transition: 0.3s; }
-        .btn-google:hover { background: #c53929; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #020617; color: #f8fafc; overflow-x: hidden; }
+
+        /* خلفية فيديو يوتيوب شفافة متحركة */
+        .video-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; opacity: 0.25; pointer-events: none; }
+        .video-bg-container iframe { width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .lang-switch { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .hero { text-align: center; padding: 80px 20px; max-width: 900px; margin: 0 auto; }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; margin-bottom: 40px; }
+
+        .btn-google-yt { background: #ff0000; color: white; padding: 15px 35px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(255,0,0,0.4); transition: 0.3s; }
+        .btn-google-yt:hover { transform: scale(1.05); background: #cc0000; }
+
+        /* قسم كيف يعمل الموقع */
+        .how-it-works { padding: 60px 20px; max-width: 1100px; margin: 0 auto; text-align: center; }
+        .how-it-works h2 { font-size: 2.5rem; margin-bottom: 40px; color: #38bdf8; }
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; text-align: right; }
+        .step-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 16px; transition: 0.3s; }
+        .step-card:hover { transform: translateY(-5px); border-color: #38bdf8; }
+        .step-num { font-size: 3rem; font-weight: 900; color: #38bdf8; opacity: 0.4; margin-bottom: 10px; }
+        .step-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; }
+        .step-card p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>منصة Hydra Exchange</h1>
-        <p>أنشئ مجتمعك وضاعف مشاهدات واشتراكات قناتك على يوتيوب بطريقة آمنة وسريعة ومجانية تماماً. سجل الدخول بحسابك الآن واحصل على 50 نقطة هدية!</p>
-        <a href="/auth/google" class="btn-google">تسجيل الدخول بواسطة جوجل</a>
+
+    <!-- خلفية يوتيوب شفافة متحركة -->
+    <div class="video-bg-container">
+        <iframe src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&loop=1&playlist=jfKfPfyJRdk" frameborder="0"></iframe>
     </div>
+
+    <nav class="navbar">
+        <div class="logo">⚡ Hydra AI Exchange</div>
+        <button class="lang-switch" onclick="toggleLang()">English / العربية</button>
+    </nav>
+
+    <div class="hero">
+        <h1 id="heroTitle">ضاعف مشاهدات واشتراكات قناتك على يوتيوب بالذكاء الاصطناعي</h1>
+        <p id="heroDesc">نظام أوتوماتيكي ذكي يربط قناتك بمجتمع ضخم لتبادل المشاهدات، حصد الإعجابات، وتوليد النقاط بنصف نقطة لكل تفاعل!</p>
+        <a href="/auth/google" class="btn-google-yt">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span id="btnLoginText">تسجيل الدخول بحساب يوتيوب</span>
+        </a>
+    </div>
+
+    <div class="how-it-works">
+        <h2 id="howTitle">كيف يعمل النظام الأوتوماتيكي؟</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">01</div>
+                <h3 id="step1Title">ربط حساب يوتيوب</h3>
+                <p id="step1Desc">سجل الدخول بحسابك بأمان لتتم مزامنة قناتك واكتشاف فيديوهاتك تلقائياً دون إدخال كلمات مرور.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">02</div>
+                <h3 id="step2Title">تجميع النقاط (0.5 لكل تفاعل)</h3>
+                <p id="step2Desc">شاهد الفيديوهات القصيرة Shorts أو تفاعل معها واكسب نصف نقطة تلقائياً عن كل تفاعل أوتوماتيكي.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">03</div>
+                <h3 id="step3Title">إطلاق الحملات بالذكاء الاصطناعي</h3>
+                <p id="step3Desc">اختر فيديوهاتك من لوحة التحكم بنقرة واحدة، واجعل الخوارزميات تروج لها لدى آلاف المستخدمين فوراً.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAr = true;
+        function toggleLang() {
+            isAr = !isAr;
+            const root = document.getElementById('htmlRoot');
+            root.dir = isAr ? 'rtl' : 'ltr';
+            document.getElementById('heroTitle').innerText = isAr ? 'ضاعف مشاهدات واشتراكات قناتك على يوتيوب بالذكاء الاصطناعي' : 'Supercharge Your YouTube Channel with AI Automation';
+            document.getElementById('heroDesc').innerText = isAr ? 'نظام أوتوماتيكي ذكي يربط قناتك بمجتمع ضخم لتبادل المشاهدات، حصد الإعجابات، وتوليد النقاط بنصف نقطة لكل تفاعل!' : 'Smart automated system linking your channel to exchange views, gather likes, and earn points instantly!';
+            document.getElementById('btnLoginText').innerText = isAr ? 'تسجيل الدخول بحساب يوتيوب' : 'Sign in with YouTube';
+            document.getElementById('howTitle').innerText = isAr ? 'كيف يعمل النظام الأوتوماتيكي؟' : 'How Automated System Works?';
+            document.getElementById('step1Title').innerText = isAr ? 'ربط حساب يوتيوب' : 'Connect YouTube';
+            document.getElementById('step1Desc').innerText = isAr ? 'سجل الدخول بحسابك بأمان لتتم مزامنة قناتك واكتشاف فيديوهاتك تلقائياً دون إدخال كلمات مرور.' : 'Securely login to sync your channel and fetch your videos automatically.';
+            document.getElementById('step2Title').innerText = isAr ? 'تجميع النقاط (0.5 لكل تفاعل)' : 'Earn Points (0.5/action)';
+            document.getElementById('step2Desc').innerText = isAr ? 'شاهد الفيديوهات القصيرة Shorts أو تفاعل معها واكسب نصف نقطة تلقائياً عن كل تفاعل أوتوماتيكي.' : 'Watch Shorts or interact and earn 0.5 points per action automatically.';
+            document.getElementById('step3Title').innerText = isAr ? 'إطلاق الحملات بالذكاء الاصطناعي' : 'AI Campaigns Launch';
+            document.getElementById('step3Desc').innerText = isAr ? 'اختر فيديوهاتك من لوحة التحكم بنقرة واحدة، واجعل الخوارزميات تروج لها لدى آلاف المستخدمين فوراً.' : 'Select your videos from dashboard with 1-click and let algorithms promote them.';
+        }
+    </script>
 </body>
 </html>
