@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     channelName: { type: String, required: true },
     channelId: { type: String, required: true },
     tokens: { type: Object, required: true },
-    credits: { type: Number, default: 50 }, // 50 نقطة مجانية للزبون الجديد
+    credits: { type: Number, default: 50 }, // 50 نقطة هدية ترحيبية
     role: { type: String, default: 'user' },
     createdAt: { type: Date, default: Date.now }
 });
