@@ -3,177 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | Hydra YouTube AI</title>
+    <title>لوحة التحكم | HydraTube AI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: #050505; color: #fff; background-image: radial-gradient(circle at 10% 20%, rgba(20, 184, 166, 0.1), transparent 30%), radial-gradient(circle at 90% 80%, rgba(239, 68, 68, 0.1), transparent 30%); min-height: 100vh; padding: 30px; }
         
-        .container { max-width: 1200px; margin: 0 auto; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* خلفية متحركة فخمة تعطي روح الذكاء الاصطناعي */
+        body { 
+            background: linear-gradient(-45deg, #0f172a, #020617, #1e1b4b, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f8fafc; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
         
+        /* تأثير الزجاج (Glassmorphism) للبطاقات */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 20px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            transition: transform 0.3s ease;
+        }
+        .glass-card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.5); }
+
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        .header h2 { font-weight: 900; background: linear-gradient(90deg, #38bdf8, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-logout { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn-logout:hover { background: #ef4444; color: white; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .stat-box { text-align: center; }
-        .stat-val { font-size: 2.2rem; font-weight: 900; color: #38bdf8; margin: 5px 0; }
+        .header h2 { font-weight: 900; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        h3 { color: #f1f5f9; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .btn-logout { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-logout:hover { background: #ef4444; color: white; box-shadow: 0 0 15px rgba(239,68,68,0.5); }
 
-        /* فيديوهات المستخدم الجلوبة */
-        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        .video-item { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; display: flex; gap: 12px; align-items: center; }
-        .video-item img { width: 90px; height: 60px; object-fit: cover; border-radius: 8px; }
-        .video-info h4 { font-size: 13px; margin-bottom: 5px; color: #e2e8f0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-boost { background: #22c55e; color: #020617; border: none; padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-        .btn-boost:hover { background: #16a34a; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-box { text-align: center; }
+        .stat-val { font-size: 2.5rem; font-weight: 900; color: #38bdf8; margin: 10px 0; text-shadow: 0 0 10px rgba(56,189,248,0.3); }
+        h3 { color: #f1f5f9; font-size: 1.2rem; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        
+        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+        .video-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; display: flex; gap: 12px; align-items: center; }
+        .video-item img { width: 100px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #38bdf8; }
+        .video-info h4 { font-size: 13px; margin-bottom: 8px; color: #e2e8f0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .btn-boost { background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(34,197,94,0.4); }
+        .btn-boost:hover { transform: scale(1.05); }
 
-        /* قسم تجميع النقاط الذكي (0.5 نقطة) */
-        .earn-section { text-align: center; background: linear-gradient(135deg, rgba(20,184,166,0.1), rgba(14,165,233,0.1)); border: 1px solid #14b8a6; }
-        .btn-earn { background: #14b8a6; color: #020617; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .btn-earn:hover { background: #0d9488; }
+        .earn-section { text-align: center; background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(14,165,233,0.15)); border: 1px solid #14b8a6; }
+        .btn-earn { background: linear-gradient(90deg, #14b8a6, #0ea5e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 10px; transition: 0.3s; box-shadow: 0 0 20px rgba(20,184,166,0.4); text-decoration: none; display: inline-block; }
+        .btn-earn:hover { transform: scale(1.05); }
 
-        input[type="text"] { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; padding: 12px; border-radius: 10px; margin-bottom: 10px; outline: none; direction: ltr; font-size: 13px; }
-        .crypto-address { background: #111; padding: 12px; border-radius: 8px; text-align: center; color: #f59e0b; font-family: monospace; font-size: 12px; margin-bottom: 10px; border: 1px dashed #f59e0b; user-select: all; word-break: break-all; }
-        .btn-crypto { background: linear-gradient(90deg, #f59e0b, #d97706); border: none; color: white; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        input[type="text"] { width: 100%; background: rgba(0,0,0,0.7); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 15px; border-radius: 10px; margin-bottom: 15px; outline: none; direction: ltr; font-size: 14px; text-align: center; }
+        .crypto-address { background: #000; padding: 15px; border-radius: 8px; text-align: center; color: #f59e0b; font-family: monospace; font-size: 13px; margin-bottom: 15px; border: 1px dashed #f59e0b; }
+        .btn-crypto { background: linear-gradient(90deg, #f59e0b, #d97706); border: none; color: white; width: 100%; padding: 15px; border-radius: 10px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .btn-crypto:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(245,158,11,0.4); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div>
-                <h2 id="channelTitle">مرحباً بك، جارٍ مزامنة قناة اليوتيوب...</h2>
-                <p style="color: #94a3b8; font-size: 13px;">لوحة تحكم اليوتيوب الأوتوماتيكية بالذكاء الاصطناعي</p>
+                <h2 id="channelTitle">مرحباً بك، جارٍ مزامنة القناة...</h2>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">لوحة تحكم HydraTube للأتمتة الذكية</p>
             </div>
             <a href="/logout" class="btn-logout">تسجيل الخروج ⏏</a>
         </div>
 
-        <!-- إحصائيات القناة الحقيقية -->
         <div class="stats-grid">
             <div class="glass-card stat-box">
                 <h3>إجمالي المشتركين</h3>
-                <div class="stat-val" id="subCount">0</div>
+                <div class="stat-val" id="subCount">--</div>
             </div>
             <div class="glass-card stat-box">
                 <h3>إجمالي المشاهدات</h3>
-                <div class="stat-val" id="viewCount">0</div>
+                <div class="stat-val" id="viewCount">--</div>
             </div>
             <div class="glass-card stat-box">
                 <h3>رصيد النقاط الذكي</h3>
-                <div class="stat-val" id="userCredits" style="color: #22c55e;">0</div>
+                <div class="stat-val" id="userCredits" style="color: #4ade80;">--</div>
             </div>
         </div>
 
-        <!-- نظام كسب النقاط (0.5 نقطة) -->
         <div class="glass-card earn-section">
-            <h3>⚡ نظام التفاعل الفوري (اكسب 0.5 نقطة لكل تفاعل)</h3>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 10px;">قم بمشاهدة الفيديوهات القصيرة Shorts أو الإعجاب بها لتوليد النقاط أوتوماتيكياً:</p>
-            <button class="btn-earn" onclick="earnPoints()">🎬 مشاهدة فيديو قصير (Shorts) +0.5 نقطة</button>
+            <h3>⚡ نظام التفاعل والأتمتة الذكية</h3>
+            <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px;">شغّل الأوتوميشن الآن ودع الذكاء الاصطناعي يجمع لك النقاط (0.5 نقطة لكل فيديو)</p>
+            <!-- هذا الزر سينقل المستخدم لصفحة الأوتوميشن التي برمجناها -->
+            <a href="/automation.html" class="btn-earn">🤖 بدء الأوتوميشن الآن</a>
         </div>
 
-        <!-- فيديوهات القناة المختارة للعمل -->
         <div class="glass-card">
-            <h3>🎥 فيديوهات قناتك المرتبطة (اختر فيديو للعمل عليه)</h3>
+            <h3>🎥 فيديوهات قناتك (اختر فيديو للترويج)</h3>
             <div class="videos-grid" id="videosContainer">
-                <p style="color: #94a3b8;">جاري جلب الفيديوهات من يوتيوب...</p>
+                <p style="color: #94a3b8; text-align: center; width: 100%;">جاري جلب الفيديوهات من يوتيوب...</p>
             </div>
         </div>
 
         <div class="stats-grid">
-            <!-- نظام الإحالة -->
             <div class="glass-card">
                 <h3>👥 نظام الإحالة (10 نقاط لكل صديق)</h3>
                 <input type="text" id="refLink" readonly value="جاري الإنشاء...">
-                <button class="btn-boost" style="width: 100%; padding: 10px;" onclick="copyRef()">نسخ رابط الإحالة</button>
+                <button class="btn-boost" style="width: 100%; padding: 12px; font-size: 14px;" onclick="copyRef()">نسخ رابط الإحالة</button>
             </div>
-
-            <!-- المحفظة وشحن الرصيد BEP20 -->
             <div class="glass-card">
-                <h3>💳 شحن الرصيد (USDT - BNB Smart Chain BEP20)</h3>
+                <h3>💳 شحن الرصيد (USDT - BEP20)</h3>
                 <div class="crypto-address">0x422e4ed7959958b4f0fec76fd3149af49a43c768</div>
                 <input type="text" id="txHash" placeholder="أدخل رمز العملية (Transaction Hash)">
-                <button class="btn-crypto" onclick="verifyCrypto()">🔍 تأكيد الدفعة بالذكاء الاصطناعي</button>
+                <button class="btn-crypto" onclick="verifyCrypto()">🔍 تأكيد الدفعة آلياً</button>
             </div>
         </div>
     </div>
 
     <script>
         let myDomain = window.location.origin;
-
-        // جلب البيانات والحاسبة التلقائية
+        
+        // جلب البيانات من الخادم
         fetch('/api/youtube-data')
-            .then(res => res.json())
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = '/'; // توجيه غير المسجلين للصفحة الرئيسية
+                    throw new Error('Unauthorized');
+                }
+                return res.json();
+            })
             .then(data => {
                 if (data.error) {
-                    window.location.href = '/';
-                } else {
-                    document.getElementById('channelTitle').innerText = `قناة: ${data.user.channelName}`;
-                    document.getElementById('userCredits').innerText = data.user.credits;
-                    document.getElementById('refLink').value = `${myDomain}/auth/google?ref=${data.user.referralCode}`;
-                    
-                    if (data.channel && data.channel.statistics) {
-                        document.getElementById('subCount').innerText = Number(data.channel.statistics.subscriberCount).toLocaleString();
-                        document.getElementById('viewCount').innerText = Number(data.channel.statistics.viewCount).toLocaleString();
-                    }
-
-                    const container = document.getElementById('videosContainer');
-                    if (data.videos && data.videos.length > 0) {
-                        container.innerHTML = '';
-                        data.videos.forEach(v => {
-                            container.innerHTML += `
-                                <div class="video-item">
-                                    <img src="${v.snippet.thumbnails.default.url}" alt="video">
-                                    <div class="video-info">
-                                        <h4>${v.snippet.title}</h4>
-                                        <button class="btn-boost" onclick="alert('تم اختيار الفيديو بنجاح لبدء الأوتوميشن!')">ترويج هذا الفيديو</button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        container.innerHTML = `<p style="color: #94a3b8;">لم يتم العثور على فيديوهات عامة في هذه القناة.</p>`;
-                    }
+                    alert('خطأ في جلب البيانات: ' + data.error);
+                    return;
                 }
-            });
-
-        function earnPoints() {
-            fetch('/api/earn-points', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ actionType: 'short_watch' })
+                
+                // تحديث الواجهة بالبيانات
+                document.getElementById('channelTitle').innerText = `قناة: ${data.user.channelName}`;
+                document.getElementById('userCredits').innerText = data.user.credits;
+                document.getElementById('refLink').value = `${myDomain}/auth/google?ref=${data.user.referralCode}`;
+                
+                if (data.channel && data.channel.statistics) {
+                    document.getElementById('subCount').innerText = Number(data.channel.statistics.subscriberCount).toLocaleString();
+                    document.getElementById('viewCount').innerText = Number(data.channel.statistics.viewCount).toLocaleString();
+                }
+                
+                const container = document.getElementById('videosContainer');
+                if (data.videos && data.videos.length > 0) {
+                    container.innerHTML = '';
+                    data.videos.forEach(v => {
+                        container.innerHTML += `
+                            <div class="video-item">
+                                <img src="${v.snippet.thumbnails.default.url}" alt="video">
+                                <div class="video-info">
+                                    <h4>${v.snippet.title}</h4>
+                                    <button class="btn-boost" onclick="alert('تم اختيار الفيديو بنجاح لبدء الحملة!')">ترويج الفيديو</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<p style="color: #94a3b8; text-align: center; width: 100%;">لم يتم العثور على فيديوهات عامة في هذه القناة.</p>`;
+                }
             })
-            .then(res => res.json())
-            .then(result => {
-                alert(result.message);
-                window.location.reload();
-            });
-        }
+            .catch(err => console.error(err));
 
         function copyRef() {
             let refInput = document.getElementById('refLink');
+            if(refInput.value === "جاري الإنشاء...") return;
             refInput.select();
             document.execCommand("copy");
-            alert("تم نسخ رابط الإحالة الخاص بك!");
+            alert("✅ تم نسخ رابط الإحالة الخاص بك بنجاح!");
         }
 
         async function verifyCrypto() {
             const hash = document.getElementById('txHash').value;
-            if(!hash) return alert("يرجى إدخال رمز المعاملة (TX Hash).");
+            if(!hash || hash.length < 20) return alert("❌ يرجى إدخال رمز المعاملة (TX Hash) بشكل صحيح.");
             
-            const response = await fetch('/api/verify-crypto', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ txHash: hash })
-            });
-            const result = await response.json();
-            if(result.success) {
-                alert(result.message);
-                window.location.reload();
-            } else {
-                alert(result.error);
+            const btn = document.querySelector('.btn-crypto');
+            btn.innerText = "⏳ جاري التحقق...";
+            
+            try {
+                const response = await fetch('/api/verify-crypto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ txHash: hash })
+                });
+                const result = await response.json();
+                if(result.success) {
+                    alert(result.message);
+                    window.location.reload();
+                } else {
+                    alert(result.error);
+                    btn.innerText = "🔍 تأكيد الدفعة آلياً";
+                }
+            } catch(e) {
+                alert("حدث خطأ في الاتصال بالخادم.");
+                btn.innerText = "🔍 تأكيد الدفعة آلياً";
             }
         }
     </script>
