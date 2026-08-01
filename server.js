@@ -17,10 +17,16 @@ app.use(helmet());
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 150 });
 app.use(limiter);
 
+// إعدادات الجلسة (Session) المحدثة لتعمل بشكل مثالي على Render
+app.set('trust proxy', 1);
 app.use(session({
     secret: 'hydra-ai-quantum-key',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false,
+    cookie: {
+        secure: true, // ضروري لمنصة Render (HTTPS)
+        maxAge: 24 * 60 * 60 * 1000 // 24 ساعة
+    }
 }));
 
 app.use(passport.initialize());
@@ -29,7 +35,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// إستراتيجية جوجل مع صلاحيات يوتيوب الكاملة
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -48,7 +53,7 @@ passport.use(new GoogleStrategy({
                 channelId: profile.id,
                 tokens: { accessToken: accessToken || '', refreshToken: refreshToken || '' },
                 referredBy: referredBy,
-                credits: 1 // نقطة ترحيبية أساسية
+                credits: 1
             });
             await user.save();
             if (referredBy) {
@@ -93,20 +98,15 @@ app.get('/auth/google/callback',
     (req, res) => res.redirect('/dashboard.html')
 );
 
-// جلب إحصائيات وفيديوهات يوتيوب الحقيقية للمستخدم
 app.get('/api/youtube-data', async (req, res) => {
     if (!req.user) return res.status(401).json({ error: 'غير مسجل الدخول' });
-    
     try {
         const accessToken = req.user.tokens.accessToken;
-        
-        // جلب إحصائيات القناة من YouTube API
         const channelRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true', {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         const channelData = await channelRes.json();
 
-        // جلب فيديوهات القناة
         const videosRes = await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&forMine=true&type=video&maxResults=10', {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
@@ -122,22 +122,16 @@ app.get('/api/youtube-data', async (req, res) => {
     }
 });
 
-// نظام النقاط الذكي (0.5 نقطة للمشاهدة والإعجاب بالشورتس)
 app.post('/api/earn-points', async (req, res) => {
     if (!req.user) return res.status(401).json({ error: 'غير مسجل الدخول' });
-    const { actionType } = req.body; // 'short_watch' أو 'like'
-
-    let earned = 0.5; // نصف نقطة كما طلبت
+    let earned = 0.5; // نصف نقطة
     await User.findByIdAndUpdate(req.user._id, { $inc: { credits: earned } });
-    
-    res.json({ success: true, added: earned, message: `✨ تم إضافة ${earned} نقطة بنجاح بواسطة خوارزمية الذكاء الاصطناعي!` });
+    res.json({ success: true, added: earned, message: `✨ تم إضافة ${earned} نقطة بنجاح!` });
 });
 
-// تأكيد الدفع عبر محفظة البلوكشين BEP20
 app.post('/api/verify-crypto', async (req, res) => {
     if (!req.user) return res.status(401).json({ error: 'غير مصرح' });
     const { txHash } = req.body;
-    
     if (txHash && txHash.length > 20) {
         await User.findByIdAndUpdate(req.user._id, { $inc: { credits: 1000 } });
         res.json({ success: true, message: '✅ تم تأكيد الدفعة عبر شبكة BNB Smart Chain (BEP20) بنجاح!' });
@@ -146,5 +140,12 @@ app.post('/api/verify-crypto', async (req, res) => {
     }
 });
 
-app.get('/logout', (req, res) => req.logout(() => res.redirect('/')));
+app.get('/logout', (req, res) => {
+    req.logout(() => {
+        req.session.destroy(() => {
+            res.redirect('/');
+        });
+    });
+});
+
 app.listen(PORT, () => console.log(`🚀 الخادم الخارق يعمل على المنفذ ${PORT}`));
